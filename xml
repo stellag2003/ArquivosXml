@@ -1,0 +1,73 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml; // precisa pra rodar
+using System.IO; // precisa pra rodar
+
+namespace Teste
+{
+    public partial class Form8 : Form
+    {
+        public static Form8 form8;
+
+        public Form8()
+        {
+            InitializeComponent();
+            form8 = this;
+        }
+
+        private void btnAdicionar_Click(object sender, EventArgs e)
+        {
+            /*DataRow dr = dtItens.NewRow();
+            dr[txtCliente]*/
+            FrmItenscs formNovo = new FrmItenscs();
+            formNovo.Show(); //  Show.Dialog impede q o usuario feche o programa sem antes fechar a segunda tela e Show só mostra
+        }
+
+        private void btnAbrir_Click(object sender, EventArgs e)
+        {
+            string caminho = Path.Combine(Application.StartupPath, "tabelaxml");
+            string nomeArquivo = DateTime.Now.ToString("ddMMyyyyHHmmss") + ".xml";
+            string caminhoArquivo = Path.Combine(caminho, nomeArquivo);
+
+            if (!Directory.Exists(caminho))
+            {
+                Directory.CreateDirectory(caminho);
+
+            }
+
+            XmlTextWriter xml = new XmlTextWriter(caminhoArquivo, Encoding.UTF8);
+
+            xml.WriteStartDocument();
+            xml.WriteStartElement("");
+            xml.WriteAttributeString("numero", DateTime.Now.ToString("ss"));
+
+            #region documentos
+
+            xml.WriteStartElement("documentos");
+            xml.WriteElementString("rg", "9");
+            xml.WriteElementString("cpf", "9");
+
+            xml.WriteEndElement(); // documentos
+            xml.WriteElementString("nome", "lua");
+
+
+            #endregion
+
+            xml.WriteEndElement(); // clientes
+
+
+            xml.WriteEndDocument();
+            xml.Close();
+            xml.Dispose();
+
+            MessageBox.Show("Arquivo criado com sucesso");
+        }
+    }
+}
