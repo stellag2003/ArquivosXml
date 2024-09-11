@@ -1,0 +1,78 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml;
+
+
+namespace Teste
+{
+    public partial class Form7 : Form
+    {
+        public Form7()
+        {
+            InitializeComponent();
+        }
+
+        private void btnGerar_Click(object sender, EventArgs e)
+        {
+            string caminho = Path.Combine(Application.StartupPath, "arquivos" );
+            string nomeArquivo = DateTime.Now.ToString("ddMMyyyyHHmmss"  ) + ".xml";
+            string caminhoArquivo = Path.Combine(caminho, nomeArquivo);
+
+            if (!Directory.Exists(caminho))
+            {
+                Directory.CreateDirectory(caminho);
+
+            }
+
+            XmlTextWriter xml = new XmlTextWriter(caminhoArquivo, Encoding.UTF8);
+
+            xml.WriteStartDocument();
+            xml.WriteStartElement("clientes");
+            xml.WriteAttributeString("numero" , DateTime.Now.ToString("ss"));
+
+            #region documentos
+
+            xml.WriteStartElement("documentos");
+            xml.WriteElementString("rg" , "9");
+            xml.WriteElementString("cpf", "9");
+
+            xml.WriteEndElement(); // documentos
+            xml.WriteElementString("nome", "lua");
+
+
+            #endregion
+
+            xml.WriteEndElement(); // clientes
+            
+
+            xml.WriteEndDocument();
+            xml.Close();
+            xml.Dispose();
+
+            MessageBox.Show("Arquivo criado com sucesso");
+
+        }
+
+        private void btnLer_Click(object sender, EventArgs e)
+        {
+            DataSet ds = new DataSet();
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Arquivo de texto(*.xml)|*.xml";
+
+            if (DialogResult.OK == openFileDialog.ShowDialog())
+            {
+                XmlTextReader reader = new XmlTextReader(new StreamReader(openFileDialog.FileName));
+                ds.ReadXml(reader);
+
+            }
+        }
+    }
+}
